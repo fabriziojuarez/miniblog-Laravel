@@ -5,6 +5,12 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Listado de Posts</h2>
         <a href="{{ route('posts.create') }}" class="btn btn-primary">Agregar nuevo Post</a>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit"
+            class="btn btn-danger"
+            >Cerrar sesión</button>
+        </form>
     </div>
 
     <div class="row">
