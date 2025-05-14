@@ -1,0 +1,67 @@
+Iniciar un proyecto en laravel:
+    composer ...
+
+Crear un Migracion:
+    php artisan make:migrate <nombre de migracion(ejemplo comun: "create_<nombre de tabla>_table")>
+
+Crear un Modelo:
+    php artisan make:Model <nombre de modelo>
+
+Crear un Controller:
+    php artisan make:Controller <nombre de controller>
+
+Crear todo a la vez(Migracion, Modelo y Controller):
+    php artisan make:Model <nombre> -mc
+
+Ejecutar Migraciones:       |   Refrescar Migraciones:
+    php artisan migrate     |       php artisan migrate:fresh
+
+Levantar proyecto:
+    php artisan serve
+
+NOTA:   Para desarrollar una llave foranea, por la estructura establecida por laravel se debe realizar de la siguiente manera:
+        En una tabla Posts que se desea relacionar con la tabla Users por su id:
+        $table->unsignedBigInteger('user_id')
+        $table->foreing('user_id')->references('id')->on('users')->onDelete('cascade')
+
+NOTA:   Cuando se realiza el model, se requiere el $fillable para mostrar los datos que se rellenaran.
+        Una vez desarrollada la llave foranea se necesita crear la relacion de los datos, estos pueden ser:
+        -belongsTo(Pertenece a uno)
+        -hasMany(Pertenece a varios)
+        En el modelo Post para asignar que un Post solo le pertene a un usuario:
+            class Post extends Model
+            {
+                use HasFactory;
+                protected $fillable = ['titulo', 'contenido', 'id_user'];
+                public function user()
+                {                                           // belongsTo porque un Post solo pertenece a un User
+                    return $this->belongsTo(User::class);   // Al realizar esto, laravel espera <nombre de la tabla>_id para relacionarlo
+                }                                           // es decir: en la tabla Post espera el dato en la columna 'user_id'
+            }
+        Si en caso deseas nombrar tu columna de otra manera puedes hacerlo de la siguiente manera:
+            En la funcion public function user():
+                public function user()
+                {                                                                       // Esto le dice a laravel que el valor que espera 'user_id'
+                    return $this->belongsTo(User::class, '<nombre de tu columna>');     // se encuentra en la columna que estableces
+                }
+
+Asignarle un nombre a una ruta:
+    Ejemplo de ruta:
+        Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Utilidad del nombre:
+        Se le asigna un nombre unico a la ruta, para que sea llamada en las vistas en los controladores. Esto permite que si en caso se desean hacer
+        cambios a la ruta, esta seguiran trabajando por el nombre asignado.
+
+Proteger rutas (por grupo):                                         |   Proteger rutas(individualmente):
+    Route::middleware(['auth'])->group(function(){                  |       Route::post('/index', [PostController::class, 'index'])->middleware(['auth'])
+        // Rutas que estaran protegidas por una autentificacion     |
+    });                                                             |
+
+DIRECTIVAS DE BLADE:
+    Blade es el motor de plantillas que usa Laravel, esto genera codigo HTML desde sus vistas.
+    Ejemplo de directivas con sus funciones:
+    -@auth / @endauth -> Verifica si el usuario esta autenticado
+    -@csrf -> Se emplea dentro de formularios HTML para incluir un Token CSRF(Cross-Site Request Forgerys)
+           '-> Token CSRF: Verifica si el usuario autenticado es el que esta realizando la solicitud
+    -@guest -> Verifica que el usuario NO este autenticado
+
