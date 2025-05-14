@@ -42,10 +42,18 @@ class AuthController extends Controller
         ]);
 
         if(Auth::attempt($request->only('email', 'password'))){
-            return redirect()->intended('/')->with('success', 'Has iniciado sesion correctamente');
+            return redirect()->intended('home')->with('success', 'Has iniciado sesion correctamente');
         }
 
         return back()->withErrors(['errors'=>'Credenciales incorrectas']);
     }
 
+    public function logout(Request $request){
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Sesion cerrada correctamente');
+    }
 }
