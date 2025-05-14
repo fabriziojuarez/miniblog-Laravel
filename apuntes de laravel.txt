@@ -1,5 +1,5 @@
 Iniciar un proyecto en laravel:
-    composer ...
+    composer create-project laravel/laravel <nombre del proyecto>
 
 Crear un Migracion:
     php artisan make:migrate <nombre de migracion(ejemplo comun: "create_<nombre de tabla>_table")>
